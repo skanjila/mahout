@@ -20,31 +20,16 @@ import scala.language.higherKinds
  - 3 = LogisticRegression model
  - 4 = Support Vector Machines nodel
  */
-trait GlmModel[K] extends RegressorModel[K] {
-
-  var beta: MahoutVector = _
-  var se: MahoutVector = _
-  var tScore: MahoutVector = _
-  var pval: MahoutVector = _
-  var degreesFreedom: Int = _
+class GlmModel[K] extends LinearRegressorModel[K] {
 
   // Create a set of apply functions for each of the types
   // of models we want to process, need to rethink how to make
   //this completely generic and how to make it work with the other
   //functions that are available in the fitter
-  //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-  /** Build a Simple Ordinary Least Squares model through the apply function
-    * Inputs specify a set number of rows but have constrained number of columns
-    *  @param drmX the x component of the matrix
-    *  @param drmY the y component of the matrix
-    *  @return a model object to be processed
-    */
-  def apply (drmX:DrmLike[K],drmY:DrmLike[K]): Model =
-  {
-    val model = new OrdinaryLeastSquares[K]().fit(drmX, drmY)
-    model
-  } // apply
 
+  def predict(drmPredictors: DrmLike[K]): DrmLike[K] = {
+    return null
+  }
 
   //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   /** Build a Linear Regressor model through the apply function
@@ -53,12 +38,18 @@ trait GlmModel[K] extends RegressorModel[K] {
     *  @param iterations the number of iterations
     *  @return A model in this case the LinearRegressorFitter
     */
-  def apply (drmFeatures:DrmLike[K],drmTarget:DrmLike[K],iterations:Int,hyperparameters: (Symbol, Any)*): Model =
+  def apply (drmFeatures:DrmLike[K],drmTarget:DrmLike[K],algorithm:Int,iterations:Int,hyperparameters: (Symbol, Any)*): LinearRegressorModel[K] =
   {
-    var regressor: LinearRegressorFitter[K] = hyperparameters.asInstanceOf[Map[Symbol,
-      LinearRegressorFitter[K]]].getOrElse('regressor, new OrdinaryLeastSquares[K]())
-    var regressionModel: LinearRegressorModel[K] = regressor.fit(drmFeatures, drmTarget)
-    regressionModel
+    if (algorithm==1)
+    {
+      var regressor: LinearRegressorFitter[K] = hyperparameters.asInstanceOf[Map[Symbol,
+        LinearRegressorFitter[K]]].getOrElse('regressor, new OrdinaryLeastSquares[K]())
+      var regressionModel: LinearRegressorModel[K] = regressor.fit(drmFeatures, drmTarget)
+      regressionModel
+    } else {
+      val model = new OrdinaryLeastSquares[K]().fit(drmFeatures, drmTarget)
+      model
+    }
   } // apply
 }
 
