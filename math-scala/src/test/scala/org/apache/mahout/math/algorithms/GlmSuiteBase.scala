@@ -1,3 +1,5 @@
+package org.apache.mahout.math.algorithms
+
 import org.apache.mahout.math.algorithms.Model
 import org.apache.mahout.math.algorithms.regression.{GlmModel, LinearRegressorModel}
 import org.apache.mahout.math.drm._
@@ -47,7 +49,7 @@ trait GlmSuiteBase extends DistributedMahoutSuite with Matchers {
     val drmX = drmData(::, 0 until 4)
     val drmY = drmData(::, 4 until 5)
 
-    val model:LinearRegressorModel[Int] = new GlmModel[Int]().apply(drmX, drmY,1,3,null)
+    val model:LinearRegressorModel[Int] = new GlmModel[Int]().apply(drmX, drmY,2,3,null)
 
     val estimate = model.beta
     val Ranswers = dvec(-1.336265, -13.157702, -4.152654, -5.679908, 163.179329)
